@@ -23,7 +23,7 @@ import java.util.Scanner;
  */
 public class DupEdges {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args){
         /// TODO : Change this to your graph source
     	dupEdges("graphs/Graph_6V_7E.txt", "graphs/Graph_6V_7E_DupedEdges.txt");
     }
@@ -36,67 +36,72 @@ public class DupEdges {
      * @param fileName of file with edges
      * @throws IOException
      */
-    public static void dupEdges(String inputFileName, String outputFileName) throws IOException{
+    public static void dupEdges(String inputFileName, String outputFileName){
     	Scanner in = null;
 		BufferedWriter bw = null;
 		FileWriter fw = null;
 		File inputFile = new File(inputFileName);
 		File outpuFile = new File(outputFileName);
 		
-		// if input-file doesnt exists, error out
-        if (!inputFile.exists()) {
-            throw new FileNotFoundException("ERROR: INPUT FILE DOESN'T EXIST");
-        }
-		
-		// if output-File doesnt exists, then create it
-		if (!outpuFile.exists()) {
-		    outpuFile.createNewFile();
-		}
-		
 		try {
-            in = new Scanner(inputFile);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-		// true = append file
-		fw = new FileWriter(outpuFile.getAbsoluteFile(), false);
-		bw = new BufferedWriter(fw);
-		
-		// Scan for vertices
-        Scanner lineScan = null;
-        while( in.hasNextLine() ){
-            String line = in.nextLine();
-            if(line.equals("$")) break;
-            
-            lineScan = new Scanner(line);
-            String id1 = lineScan.next();
-            int x = lineScan.nextInt();
-            int y = lineScan.nextInt();
-            
-            bw.write(id1 + " " + x + " " + y + "\n");
-        }
-        
-        bw.write("$\n");
-		
-		// Scan for edges and copy them to the new file
-		Scanner edgeScan = null;
-		while( in.hasNextLine() ){
-			String line = in.nextLine();
-			edgeScan = new Scanner(line);
-			String id1 = edgeScan.next();
-			String id2 = edgeScan.next();
-			double weight = edgeScan.nextDouble();
+			// if input-file doesnt exists, error out
+	        if (!inputFile.exists()) {
+	            throw new FileNotFoundException("ERROR: INPUT FILE DOESN'T EXIST");
+	        }
 			
-			bw.write(id1 + " " + id2 + " " + weight + "\n");
-			bw.write(id2 + " " + id1 + " " + weight + "\n");
+			// if output-File doesnt exists, then create it
+			if (!outpuFile.exists()) {
+			    outpuFile.createNewFile();
+			}
+			
+			try {
+	            in = new Scanner(inputFile);
+	        } catch (FileNotFoundException e) {
+	            e.printStackTrace();
+	        }
+
+			// true = append file
+			fw = new FileWriter(outpuFile.getAbsoluteFile(), false);
+			bw = new BufferedWriter(fw);
+			
+			// Scan for vertices
+	        Scanner lineScan = null;
+	        while( in.hasNextLine() ){
+	            String line = in.nextLine();
+	            if(line.equals("$")) break;
+	            
+	            lineScan = new Scanner(line);
+	            String id1 = lineScan.next();
+	            int x = lineScan.nextInt();
+	            int y = lineScan.nextInt();
+	            
+	            bw.write(id1 + " " + x + " " + y + "\n");
+	        }
+	        
+	        bw.write("$\n");
+			
+			// Scan for edges and copy them to the new file
+			Scanner edgeScan = null;
+			while( in.hasNextLine() ){
+				String line = in.nextLine();
+				edgeScan = new Scanner(line);
+				String id1 = edgeScan.next();
+				String id2 = edgeScan.next();
+				double weight = edgeScan.nextDouble();
+				
+				bw.write(id1 + " " + id2 + " " + weight + "\n");
+				bw.write(id2 + " " + id1 + " " + weight + "\n");
+			}
+			
+			// Close scanners
+			in.close();
+			lineScan.close();
+			edgeScan.close();
+			bw.close();
+		} catch( IOException e){
+			System.out.println(e.getMessage());
 		}
 		
-		// Close scanners
-		in.close();
-		lineScan.close();
-		edgeScan.close();
-		bw.close();
     }
     
 }

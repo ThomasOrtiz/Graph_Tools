@@ -68,77 +68,82 @@ public class RenameVertices {
      * @param fileName of file with edges
      * @throws IOException
      */
-    public static void renameVertices(String inputFileName, String outputFileName, boolean useAlphaToNum) throws IOException{
+    public static void renameVertices(String inputFileName, String outputFileName, boolean useAlphaToNum){
     	Scanner in = null;
 		BufferedWriter bw = null;
 		FileWriter fw = null;
 		File inputFile = new File(inputFileName);
 		File outputFile = new File(outputFileName);
 		
-		// if input-file doesnt exists, then create it
-		if (!inputFile.exists()) {
-			throw new FileNotFoundException("ERROR: INPUT FILE DOESN'T EXIST");
-		}
-		
-		outputFile.createNewFile();
-
-		// true = append file
-		fw = new FileWriter(outputFile.getAbsoluteFile(), false);
-		bw = new BufferedWriter(fw);
-		
 		try {
-			in = new Scanner(inputFile);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			// if input-file doesnt exists, then create it
+			if (!inputFile.exists()) {
+				throw new FileNotFoundException("ERROR: INPUT FILE DOESN'T EXIST");
+			}
+			
+			outputFile.createNewFile();
+
+			// true = append file
+			fw = new FileWriter(outputFile.getAbsoluteFile(), false);
+			bw = new BufferedWriter(fw);
+			
+			try {
+				in = new Scanner(inputFile);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+			
+			// Scan for vertices
+			Scanner lineScan = null;
+			String line = "";
+			while( in.hasNextLine() ){
+				line = in.nextLine();
+				if(line.equals("$")) break;
+				
+				lineScan = new Scanner(line);
+				String id1 = "";
+				if( useAlphaToNum ){
+					id1 = "" + lettersToInts( lineScan.next() ); // (if going from a --> 0)
+				} else {
+					id1 = "" + intsToLetters( Integer.parseInt(lineScan.next()) ); // (if going from 0 --> a)
+				}
+				int x = lineScan.nextInt();
+				int y = lineScan.nextInt();
+				
+				bw.write(id1 + " " + x + " " + y + "\n");
+			}
+			
+			bw.write("$\n");
+			
+			// Scan for edges and copy them to the new file
+	        Scanner edgeScan = null;
+	        while( in.hasNextLine() ){
+	            line = in.nextLine();
+	            edgeScan = new Scanner(line);
+	            
+	            String id1 = "";
+	            String id2 = "";
+				if( useAlphaToNum ){
+					id1 = "" + lettersToInts( edgeScan.next() ); // (if going from a --> 0)
+		            id2 = "" + lettersToInts( edgeScan.next() ); // (if going from a --> 0)
+				} else {
+					id1 = "" + intsToLetters( Integer.parseInt(edgeScan.next()) ); // (if going from 0 --> a)
+		            id2 = "" + intsToLetters( Integer.parseInt(edgeScan.next()) ); // (if going from 0 --> a)
+				}
+	            double weight = edgeScan.nextDouble();
+	            
+	            bw.write( id1 + " " + id2 + " " + weight + "\n" );
+	        }
+			
+			// Close scanners
+			in.close();
+			edgeScan.close();
+			lineScan.close();
+			bw.close();
+		} catch (IOException e){
+			System.out.println(e.getMessage());
 		}
 		
-		// Scan for vertices
-		Scanner lineScan = null;
-		String line = "";
-		while( in.hasNextLine() ){
-			line = in.nextLine();
-			if(line.equals("$")) break;
-			
-			lineScan = new Scanner(line);
-			String id1 = "";
-			if( useAlphaToNum ){
-				id1 = "" + lettersToInts( lineScan.next() ); // (if going from a --> 0)
-			} else {
-				id1 = "" + intsToLetters( Integer.parseInt(lineScan.next()) ); // (if going from 0 --> a)
-			}
-			int x = lineScan.nextInt();
-			int y = lineScan.nextInt();
-			
-			bw.write(id1 + " " + x + " " + y + "\n");
-		}
-		
-		bw.write("$\n");
-		
-		// Scan for edges and copy them to the new file
-        Scanner edgeScan = null;
-        while( in.hasNextLine() ){
-            line = in.nextLine();
-            edgeScan = new Scanner(line);
-            
-            String id1 = "";
-            String id2 = "";
-			if( useAlphaToNum ){
-				id1 = "" + lettersToInts( edgeScan.next() ); // (if going from a --> 0)
-	            id2 = "" + lettersToInts( edgeScan.next() ); // (if going from a --> 0)
-			} else {
-				id1 = "" + intsToLetters( Integer.parseInt(edgeScan.next()) ); // (if going from 0 --> a)
-	            id2 = "" + intsToLetters( Integer.parseInt(edgeScan.next()) ); // (if going from 0 --> a)
-			}
-            double weight = edgeScan.nextDouble();
-            
-            bw.write( id1 + " " + id2 + " " + weight + "\n" );
-        }
-		
-		// Close scanners
-		in.close();
-		edgeScan.close();
-		lineScan.close();
-		bw.close();
     }
     
     /**
