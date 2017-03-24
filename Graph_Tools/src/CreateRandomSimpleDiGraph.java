@@ -35,15 +35,32 @@ public class CreateRandomSimpleDiGraph {
 
     public static void main(String[] args) {        
         int maxNodes = 5000;
-        int maxExtraEdges = 10;
+        int maxEdges = 0;
+        int maxExtraEdges = 0;
         
         // Get user input
         Scanner in = new Scanner(System.in);
         try { 
-            System.out.print("Number Of Nodes? ");
+            // Get max nodes
+        	System.out.print("Number Of Nodes? ");
             maxNodes = in.nextInt();
-            System.out.print("Max Extra Edges To Add Per Vertex? ");
-            maxExtraEdges = in.nextInt();
+            
+            // Get mins and maxes from amount of nodes
+            int minEdges = 2 * (maxNodes-1);
+            long maxPotentialEdges = (long) maxNodes * (maxNodes-1);
+            
+            // Try to get correct maxEdges 
+            while( maxEdges < minEdges || maxEdges > maxPotentialEdges){
+            	System.out.print("Max Edges between [" + minEdges + " , " + maxPotentialEdges + "]? " );
+                maxEdges = in.nextInt();
+            }
+            
+            // Try to get maxExtra edges to add
+            while( maxExtraEdges <= 2){
+            	System.out.print("Max Extra Edges To Add Per Vertex ( # > 2)? ");
+            	maxExtraEdges = in.nextInt();
+            }
+            
         } catch( InputMismatchException e){
             System.out.println("Invald input - insert a number");
             System.exit(1);
@@ -52,12 +69,13 @@ public class CreateRandomSimpleDiGraph {
         
         // Create the random graph
         Graph g = new Graph();
-        createRandomGraph(g, maxNodes, maxExtraEdges);
+        createRandomGraph(g, maxNodes, maxEdges, maxExtraEdges);
         
         // Print the new graph to an output file
-        System.out.println("Writing Graph with " + maxNodes + " nodes to " + "graphs/graph_" + maxNodes + ".txt" );
-		printGraphToFile(g, "graphs/graph_" + maxNodes + ".txt");
-        System.out.println("Done Creating " + "graphs/graph_" + maxNodes + ".txt");
+        int numEdges = g.graph.edgeSet().size();
+        System.out.println("Writing Graph with " + maxNodes + " nodes and " + numEdges + " edges to graphs/graph_" + maxNodes + "_" + numEdges + ".txt" );
+		printGraphToFile(g, "graphs/graph_" + maxNodes + "_" + numEdges + ".txt");
+        System.out.println("Done Creating " + "graphs/graph_" + maxNodes + "_" + numEdges + ".txt");
     }
     
     /**
@@ -69,7 +87,7 @@ public class CreateRandomSimpleDiGraph {
      * @param minWeight minimum weight of an edge
      * @param maxWeight maximum weight of an edge
      */
-    public static void createRandomGraph(Graph g, int maxVertices, int maxExtraEdges) {
+    public static void createRandomGraph(Graph g, int maxVertices, int maxEdges, int maxExtraEdges) {
         ArrayList<Vertex> vertices = new ArrayList<Vertex>();
         vertices.addAll( g.graph.vertexSet() );
         DecimalFormat df = new DecimalFormat("#.##");
@@ -104,8 +122,45 @@ public class CreateRandomSimpleDiGraph {
         }
         
         // Add extra edges randomly!
+        
+        // Adds extra edges from a random source to a random neighbor
+        // Only allows up to <maxExtraEdges> to be added to a single vertex 
+        while( true ){
+        	// If we've already hit max edges of graph break
+        	if( g.graph.edgeSet().size() >= maxEdges ) break;
+        	
+        	// Get source vertex
+        	int randomIndex = r.nextInt(vertices.size());
+        	Vertex source = g.idToVertex.get("" + randomIndex);
+        	
+        	// If we've already hit max edges per this vertex go to next vertex
+        	if( g.graph.edgesOf(source).size() >= maxExtraEdges ) continue;
+        	
+        	// Get Neighbor
+        	randomIndex = r.nextInt(vertices.size());
+        	Vertex neighbor = g.idToVertex.get("" + randomIndex);
+        	
+        	// Get another neighbor if we picked ourselves
+    		while( neighbor.id.equals(source.id) ){
+    			randomIndex = r.nextInt(vertices.size());
+    			neighbor = g.idToVertex.get("" + randomIndex);
+    		}
+    		
+    		// Weight the new edge
+    		double newWeight = (float) Math.hypot(source.x - neighbor.x, source.y - neighbor.y);
+    		newWeight = Double.parseDouble(df.format(newWeight));
+    		
+    		// Add the edge to the graph with a weight
+    		g.addEdgeWithWeight(source, neighbor, newWeight);
+    		g.addEdgeWithWeight(neighbor, source, newWeight);
+        }
+        
+        /*
+        // Old Version of adding edges: went through each vertex and added edges to random vertices up to maxExtraEdges
         for(Vertex v : vertices){
         	for(int i = 1; i <= r.nextInt(maxExtraEdges)+1; i++){
+        		if( g.graph.edgeSet().size() >= maxEdges ) break;
+        		
         		int randomIndex = r.nextInt(vertices.size());
         		Vertex neighbor = g.idToVertex.get(""+randomIndex);
                
@@ -123,6 +178,7 @@ public class CreateRandomSimpleDiGraph {
         		g.addEdgeWithWeight(neighbor, v, newWeight);
         	}
     	}
+    	*/
         
     }
     
