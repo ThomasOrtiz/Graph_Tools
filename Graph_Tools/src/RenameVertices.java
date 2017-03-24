@@ -76,22 +76,17 @@ public class RenameVertices {
 		File outputFile = new File(outputFileName);
 		
 		try {
-			// if input-file doesnt exists, then create it
+			// Check if source file exists, if not error out
 			if (!inputFile.exists()) {
 				throw new FileNotFoundException("ERROR: INPUT FILE DOESN'T EXIST");
 			}
 			
 			outputFile.createNewFile();
 
-			// true = append file
+			// true = append file, false = create new file
 			fw = new FileWriter(outputFile.getAbsoluteFile(), false);
 			bw = new BufferedWriter(fw);
-			
-			try {
-				in = new Scanner(inputFile);
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
+			in = new Scanner(inputFile);
 			
 			// Scan for vertices
 			Scanner lineScan = null;
