@@ -33,7 +33,7 @@ import Graph.Vertex;
  */
 public class CreateRandomSimpleDiGraph {
 
-    public static void main(String[] args) throws IOException {        
+    public static void main(String[] args) {        
         int maxNodes = 5000;
         int maxExtraEdges = 10;
         
@@ -56,7 +56,7 @@ public class CreateRandomSimpleDiGraph {
         
         // Print the new graph to an output file
         System.out.println("Writing Graph with " + maxNodes + " nodes to " + "graphs/graph_" + maxNodes + ".txt" );
-        printGraphToFile(g, "graphs/graph_" + maxNodes + ".txt");
+		printGraphToFile(g, "graphs/graph_" + maxNodes + ".txt");
         System.out.println("Done Creating " + "graphs/graph_" + maxNodes + ".txt");
     }
     
@@ -130,7 +130,7 @@ public class CreateRandomSimpleDiGraph {
      * Prints the graph out to the command line
      * @throws IOException
      */
-    public static void printGraph(Graph g) throws IOException {
+    public static void printGraph(Graph g){
         Set<Vertex> vertices = g.graph.vertexSet();
         Set<DefaultWeightedEdge> edges = g.graph.edgeSet();
         
@@ -157,36 +157,40 @@ public class CreateRandomSimpleDiGraph {
      * @param fileName to write file to
      * @throws IOException
      */
-    public static void printGraphToFile(Graph g, String fileName) throws IOException{
+    public static void printGraphToFile(Graph g, String fileName){
         BufferedWriter bw = null;
         FileWriter fw = null;
         File file = new File(fileName);
 
         // if file doesn't exists, then create it
-        if (!file.exists()) {
-            file.createNewFile();
-        }
+        try { 
+        	if (!file.exists()) {
+                file.createNewFile();
+            }
 
-        // true = append file, false = create new file
-        fw = new FileWriter(file.getAbsoluteFile(), false);
-        bw = new BufferedWriter(fw);
-        
-        Set<Vertex> vertices = g.graph.vertexSet();
-        Set<DefaultWeightedEdge> edges = g.graph.edgeSet();
-        
-        // Print out each vertex
-        for( Vertex v : vertices ){
-            bw.write(v.id + " " + (int) v.x + " " + (int) v.y + "\n" );
+            // true = append file, false = create new file
+            fw = new FileWriter(file.getAbsoluteFile(), false);
+            bw = new BufferedWriter(fw);
+            
+            Set<Vertex> vertices = g.graph.vertexSet();
+            Set<DefaultWeightedEdge> edges = g.graph.edgeSet();
+            
+            // Print out each vertex
+            for( Vertex v : vertices ){
+                bw.write(v.id + " " + (int) v.x + " " + (int) v.y + "\n" );
+            }
+            
+            bw.write("$\n");
+            
+            // Print out each edge
+            for( DefaultWeightedEdge e : edges ){
+                bw.write( g.graph.getEdgeSource(e) + " " + g.graph.getEdgeTarget(e) + " " + g.graph.getEdgeWeight(e) + "\n" );
+            }
+            
+            // Close writers
+            bw.close();
+        } catch (IOException e){
+        	System.out.println(e.getMessage());
         }
-        
-        bw.write("$\n");
-        
-        // Print out each edge
-        for( DefaultWeightedEdge e : edges ){
-            bw.write( g.graph.getEdgeSource(e) + " " + g.graph.getEdgeTarget(e) + " " + g.graph.getEdgeWeight(e) + "\n" );
-        }
-        
-        // Close writers
-        bw.close();
     }
 }
