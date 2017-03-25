@@ -66,12 +66,6 @@ public class CreateRandomSimpleDiGraph {
                 maxEdges = in.nextInt();
             }
             
-            // Try to get maxExtra edges to add
-            while( maxExtraEdges <= 2){
-            	System.out.print("Max Extra Edges To Add Per Vertex ( # > 2)? ");
-            	maxExtraEdges = in.nextInt();
-            }
-            
         } catch( InputMismatchException e){
             System.out.println("Invald input - insert a number");
             System.exit(1);
@@ -143,9 +137,6 @@ public class CreateRandomSimpleDiGraph {
         	// Get source vertex
         	int randomIndex = r.nextInt(vertices.size());
         	Vertex source = g.idToVertex.get("" + randomIndex);
-        	
-        	// If we've already hit max edges per this vertex go to next vertex
-        	if( g.graph.edgesOf(source).size() >= maxExtraEdges ) continue;
         	
         	// Get Neighbor
         	randomIndex = r.nextInt(vertices.size());
