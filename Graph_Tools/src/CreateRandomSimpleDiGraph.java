@@ -34,7 +34,7 @@ import Graph.Vertex;
 public class CreateRandomSimpleDiGraph {
 
     public static void main(String[] args) {        
-        int maxNodes = 5000;
+        int maxNodes = 0;
         int maxEdges = 0;
         int maxExtraEdges = 0;
         
@@ -44,14 +44,25 @@ public class CreateRandomSimpleDiGraph {
             // Get max nodes
         	System.out.print("Number Of Nodes? ");
             maxNodes = in.nextInt();
+            while( maxNodes < 0 ){
+            	System.out.print("Number of Nodes? (Above 0) ");
+            	maxNodes = in.nextInt();
+            }
             
             // Get mins and maxes from amount of nodes
             int minEdges = 2 * (maxNodes-1);
             long maxPotentialEdges = (long) maxNodes * (maxNodes-1);
             
             // Try to get correct maxEdges 
-            while( maxEdges < minEdges || maxEdges > maxPotentialEdges){
-            	System.out.print("Max Edges between [" + minEdges + " , " + maxPotentialEdges + "]? " );
+            System.out.print("Max Edges between [" + minEdges + " , " + maxPotentialEdges + "]? " );
+            maxEdges = in.nextInt();
+            while( maxEdges < minEdges || maxEdges > maxPotentialEdges || maxEdges % 2 != 0){
+            	if( maxEdges < minEdges || maxEdges > maxPotentialEdges ){
+            		System.out.print("Max Edges between [" + minEdges + " , " + maxPotentialEdges + "]? (Must be in Range) " );
+            	} else if ( maxEdges % 2 != 0 ){
+            		System.out.print("Max Edges between [" + minEdges + " , " + maxPotentialEdges + "]? (Must be Even) " );
+            	}
+            	
                 maxEdges = in.nextInt();
             }
             
