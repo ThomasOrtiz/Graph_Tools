@@ -36,7 +36,7 @@ public class CreateRandomSimpleDiGraph {
     public static void main(String[] args) {        
         int maxNodes = 0;
         int maxEdges = 0;
-        int maxExtraEdges = 0;
+        int maxExtraEdges = 10;
         
         // Get user input
         Scanner in = new Scanner(System.in);
