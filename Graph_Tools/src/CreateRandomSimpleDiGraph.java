@@ -157,31 +157,6 @@ public class CreateRandomSimpleDiGraph {
     		g.addEdgeWithWeight(neighbor, source, newWeight);
         }
         
-        /*
-        // Old Version of adding edges: went through each vertex and added edges to random vertices up to maxExtraEdges
-        for(Vertex v : vertices){
-        	for(int i = 1; i <= r.nextInt(maxExtraEdges)+1; i++){
-        		if( g.graph.edgeSet().size() >= maxEdges ) break;
-        		
-        		int randomIndex = r.nextInt(vertices.size());
-        		Vertex neighbor = g.idToVertex.get(""+randomIndex);
-               
-        		// get another neighbor if we picked ourselves
-        		while( neighbor.id.equals(v.id) ){
-        			neighbor = g.idToVertex.get(""+r.nextInt(vertices.size()));
-        		}
-        		
-        		// Weight the new edge
-        		double newWeight = (float) Math.hypot(v.x - neighbor.x, v.y - neighbor.y);
-        		newWeight = Double.parseDouble(df.format(newWeight));
-        		
-        		// Add the edge to the graph with a weight
-        		g.addEdgeWithWeight(v, neighbor, newWeight);
-        		g.addEdgeWithWeight(neighbor, v, newWeight);
-        	}
-    	}
-    	*/
-        
     }
     
     /**
